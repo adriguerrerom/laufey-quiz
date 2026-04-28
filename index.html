@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Laufey · Projet Francès - QUIZ</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f9f3e7;  /* crème douce vintage */
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      color: #2c3e2f;
+      padding: 2rem 1.5rem;
+    }
+
+    /* conteneur principal en deux colonnes pour l'en-tête / quiz */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #fffef7;
+      border-radius: 2rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* section flexible: image destacada + info */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      background: linear-gradient(135deg, #fef5e8 0%, #fceee3 100%);
+      border-bottom: 1px solid #ffe0c4;
+      padding: 1.8rem 2rem;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* espacio para la foto con borde decorativo vintage */
+    .photo-frame {
+      flex: 1.2;
+      min-width: 240px;
+      text-align: center;
+    }
+
+    .photo-frame .decor-border {
+      background: #ffffffcc;
+      padding: 0.7rem;
+      border-radius: 2.5rem;
+      box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.05), inset 0 1px 3px #fff9ef;
+      display: inline-block;
+      border: 1px solid #f5d1b0;
+      transition: all 0.2s;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      border-radius: 1.8rem;
+      display: block;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .photo-frame img:hover {
+      transform: scale(1.01);
+    }
+
+    .caption {
+      margin-top: 0.9rem;
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      color: #a67548;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    /* info breve de Laufey */
+    .bio-note {
+      flex: 1;
+      background: rgba(255, 250, 240, 0.7);
+      backdrop-filter: blur(1px);
+      padding: 1.2rem 1.8rem;
+      border-radius: 2rem;
+      border-left: 5px solid #f3b38b;
+    }
+
+    .bio-note h1 {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: #6b4c3b;
+      letter-spacing: -0.3px;
+      margin-bottom: 0.5rem;
+    }
+
+    .bio-note p {
+      margin-top: 0.6rem;
+      line-height: 1.4;
+      color: #4a3b2f;
+    }
+
+    .subtile {
+      font-size: 1rem;
+      background: #fae6d4;
+      display: inline-block;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-weight: 500;
+    }
+
+    /* zona quiz */
+    .quiz-section {
+      padding: 2rem 2rem 2rem 2rem;
+    }
+
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .quiz-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      color: #88644c;
+      border-bottom: 2px dashed #f2cfb6;
+      display: inline-block;
+      padding-bottom: 0.3rem;
+    }
+
+    .questions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+
+    .question-card {
+      background: #ffffff;
+      border-radius: 1.5rem;
+      padding: 1.2rem 1.6rem;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.03);
+      border: 1px solid #ffe3d0;
+      transition: all 0.2s;
+    }
+
+    .question-text {
+      font-weight: 700;
+      font-size: 1.1rem;
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      color: #4b3a2c;
+      margin-bottom: 1rem;
+      background: #fef6ef;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2rem;
+      display: inline-block;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.6rem;
+      margin: 0.8rem 0 0.7rem 0;
+    }
+
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: #fdf7f0;
+      padding: 0.3rem 0.9rem;
+      border-radius: 40px;
+      transition: background 0.2s;
+      border: 1px solid #f7e1ce;
+    }
+
+    .options label:hover {
+      background: #f7eadc;
+    }
+
+    input[type="radio"] {
+      accent-color: #e2a679;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .feedback {
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 1.2rem;
+      display: inline-block;
+      font-style: italic;
+    }
+
+    .feedback.correct {
+      background: #e3f3e3;
+      color: #2a6b2f;
+      border-left: 4px solid #7fb07f;
+    }
+
+    .feedback.incorrect {
+      background: #ffe5e5;
+      color: #b1624b;
+      border-left: 4px solid #e2a07a;
+    }
+
+    .score-area {
+      margin-top: 2.5rem;
+      text-align: center;
+      background: #f9ede2;
+      padding: 1rem;
+      border-radius: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .score-text {
+      font-size: 1.4rem;
+      font-weight: bold;
+      background: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 3rem;
+      color: #8c5b3e;
+      box-shadow: inset 0 0 0 1px #f0cfb4;
+    }
+
+    button {
+      background: #e5c9b2;
+      border: none;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.7rem 1.8rem;
+      border-radius: 3rem;
+      color: #4c3524;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin: 0 0.3rem;
+    }
+
+    button:hover {
+      background: #dbbc9b;
+      transform: scale(0.97);
+      color: #2f241b;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    @media (max-width: 780px) {
+      body {
+        padding: 1rem;
+      }
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+      .bio-note h1 {
+        font-size: 1.7rem;
+      }
+      .options {
+        gap: 0.6rem;
+      }
+      .score-area {
+        flex-direction: column;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.7rem;
+      color: #b78f6f;
+      border-top: 1px solid #f3e1cf;
+      background: #fffbf5;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- SECTION IMAGE + INFO -->
+  <div class="hero">
+    <div class="photo-frame">
+      <div class="decor-border">
+        <!-- Espacio para foto de Laufey (imagen placeholder pero elegante, se puede reemplazar por URL real) -->
+        <img 
+          src="laufey.jpg"
+          alt="Laufey portrait vintage style"
+          onerror="this.src='https://via.placeholder.com/320x400?text=Laufey+♫'"
+          loading="lazy"
+        >
+      </div>
+      <div class="caption">✧ Laufey Lín Jónsdóttir | élégance islandaise ✧</div>
+    </div>
+    <div class="bio-note">
+      <h1>🎤 Laufey · un chanteur célèbre</h1>
+      <div class="subtile">✨ Chanteuse, violoncelliste, compositrice ✨</div>
+      <p>Elle mélange le jazz classique, la bossa nova et la pop moderne. Avec son style vintage et sa sensibilité, elle plaît à la nouvelle génération. Elle a gagné un Grammy en 2024 pour l'album <strong>"Bewitched"</strong>.</p>
+      <p>Elle est née à Reykjavik. Elle est d'origine islandaise et chinoise. Aujourd'hui, elle habite à Los Angeles. Son objectif est de faire découvrir le jazz aux jeunes.</p>
+    </div>
+  </div>
+
+  <!-- SECTION QUIZ 15 questions -->
+  <div class="quiz-section">
+    <div class="quiz-header">
+      <h2>♫ Quiz sur Laufey ♫</h2>
+      <p style="margin-top: 0.5rem;">Sélectionne la bonne réponse → valide avec « Vérifier » pour chaque question</p>
+    </div>
+
+    <div class="questions-grid" id="questionsContainer"></div>
+
+    <div class="score-area" id="scoreArea">
+      <div class="score-text" id="scoreDisplay">Score : 0 / 15</div>
+      <div class="action-buttons">
+        <button id="globalCheckBtn">✔ Vérifier tout (mise à jour notes)</button>
+        <button id="resetQuizBtn">⟳ Réinitialiser</button>
+      </div>
+    </div>
+    <p style="font-size:0.75rem; text-align:center; margin-top: 1rem;">💡 Clique sur "Vérifier" sous chaque question pour un retour immédiat. Le score total se met à jour automatiquement.</p>
+  </div>
+  <footer>projet français · Laufey · inspiration vintage & moderne</footer>
+</div>
+
+<script>
+  // ---------- BASE DE DONNÉES : 15 QUESTIONS  (conforme énoncé) ----------
+  const quizData = [
+    { 
+      question: "Quel est le nom complet de la chanteuse ?",
+      options: ["Laufey Lin Jónsdóttir", "Laufey Lín Jónsdóttir", "Laufey Johnson", "Laufey Lin"],
+      correct: "Laufey Lín Jónsdóttir"
+    },
+    {
+      question: "Quelle est sa nationalité ?",
+      options: ["Islandaise", "Chinoise", "Islandaise et chinoise", "Américaine"],
+      correct: "Islandaise et chinoise"
+    },
+    {
+      question: "Dans quelle ville est-elle née ?",
+      options: ["Paris", "Los Angeles", "Reykjavik, Islande", "Copenhague"],
+      correct: "Reykjavik, Islande"
+    },
+    {
+      question: "Quel instrument classique joue-t-elle depuis son enfance ?",
+      options: ["Le piano", "Le violon", "Le violoncelle", "La guitare"],
+      correct: "Le violoncelle"
+    },
+    {
+      question: "À quel âge a-t-elle commencé à jouer du piano ?",
+      options: ["4 ans", "6 ans", "7 ans", "5 ans"],
+      correct: "4 ans"
+    },
+    {
+      question: "Comment s'appelle sa sœur jumelle ?",
+      options: ["Júlia", "Junia", "Jonna", "Laufey Jr."],
+      correct: "Junia"
+    },
+    {
+      question: "Quel style de musique chante-t-elle principalement ?",
+      options: ["Rock alternatif", "Jazz et Pop traditionnelle", "Électro", "Hip-Hop"],
+      correct: "Jazz et Pop traditionnelle"
+    },
+    {
+      question: "Dans quelle université célèbre aux États-Unis a-t-elle étudié ?",
+      options: ["Juilliard School", "Berklee College of Music", "NYU", "UCLA"],
+      correct: "Berklee College of Music"
+    },
+    {
+      question: "Quel prix important a-t-elle gagné en 2024 ?",
+      options: ["Un Grammy Award", "Un Oscar", "Un Brit Award", "Un Latin Grammy"],
+      correct: "Un Grammy Award"
+    },
+    {
+      question: "Comment s'appelle son album récompensé par un Grammy ?",
+      options: ["Everything I Know About Love", "Bewitched", "Typical of Me", "A Night at the Symphony"],
+      correct: "Bewitched"
+    },
+    {
+      question: "Quel rythme de musique brésilienne influence ses chansons ?",
+      options: ["Samba", "Bossa Nova", "Forró", "Axé"],
+      correct: "Bossa Nova"
+    },
+    {
+      question: "Quel est son objectif principal avec sa musique ?",
+      options: ["Devenir populaire", "Faire découvrir le Jazz à la nouvelle génération", "Gagner plus de Grammy", "Fusionner pop et rap"],
+      correct: "Faire découvrir le Jazz à la nouvelle génération"
+    },
+    {
+      question: "Comment est son look ou son esthétique visuelle ?",
+      options: ["Style streetwear", "Élégant, classique et vintage", "Punk rock", "Minimaliste futuriste"],
+      correct: "Élégant, classique et vintage"
+    },
+    {
+      question: "Où habite-t-elle actuellement pour sa carrière ?",
+      options: ["New York", "Reykjavik", "Los Angeles, Californie", "Londres"],
+      correct: "Los Angeles, Californie"
+    },
+    {
+      question: "Quelle chanson de Laufey contient des influences Bossa Nova ? (indice populaire)",
+      options: ["Valentine", "From The Start", "Falling Behind", "Let You Break My Heart Again"],
+      correct: "From The Start"
+    }
+  ];
+
+  // stocker les feedbacks et réponses utilisateur
+  let userAnswers = new Array(15).fill(null);     // stocke la réponse sélectionnée (string)
+  let feedbackStatus = new Array(15).fill(null); // null / 'correct' / 'incorrect'
+  let scoreCache = 0;
+
+  // Fonction pour calculer le score en re-parcourant les réponses vs correct
+  function computeScore() {
+    let correctCount = 0;
+    for (let i = 0; i < quizData.length; i++) {
+      if (userAnswers[i] !== null && userAnswers[i] === quizData[i].correct) {
+        correctCount++;
+      }
+    }
+    scoreCache = correctCount;
+    return correctCount;
+  }
+
+  // mettre à jour l'affichage du score global
+  function updateScoreDisplay() {
+    const finalScore = computeScore();
+    const scoreSpan = document.getElementById('scoreDisplay');
+    if (scoreSpan) scoreSpan.innerText = `Score : ${finalScore} / 15`;
+  }
+
+  // fonction pour vérifier UNE question spécifique (index)
+  function verifySingleQuestion(index) {
+    const selectedRadio = document.querySelector(`input[name="q${index}"]:checked`);
+    const feedbackDiv = document.getElementById(`fb${index}`);
+    
+    if (!selectedRadio) {
+      // Si aucune réponse choisie, on affiche un message pour inviter à répondre
+      if (feedbackDiv) {
+        feedbackDiv.innerHTML = "❓ Veuillez sélectionner une réponse.";
+        feedbackDiv.className = "feedback incorrect"; // style neutre mais informe
+        feedbackDiv.style.background = "#fff0e0";
+      }
+      // on ne change pas le statut de réponse
+      return;
+    }
+    
+    const userChoice = selectedRadio.value;
+    const correctAnswer = quizData[index].correct;
+    const isCorrect = (userChoice === correctAnswer);
+    
+    // Mettre à jour userAnswers
+    userAnswers[index] = userChoice;
+    
+    // Mettre à jour le feedback visuel
+    if (feedbackDiv) {
+      if (isCorrect) {
+        feedbackDiv.innerHTML = "✅ Correct ! " + (correctAnswer === userChoice ? "Bonne réponse." : "");
+        feedbackDiv.className = "feedback correct";
+      } else {
+        feedbackDiv.innerHTML = `❌ Incorrect. La bonne réponse est : "${correctAnswer}".`;
+        feedbackDiv.className = "feedback incorrect";
+      }
+    }
+    // Met à jour le score calculé et l'affichage
+    updateScoreDisplay();
+  }
+
+  // Fonction globale pour tout vérifier (maintient les retours)
+  function verifyAllQuestions() {
+    for (let i = 0; i < quizData.length; i++) {
+      verifySingleQuestion(i);
+    }
+    updateScoreDisplay();
+  }
+
+  // Fonction pour réinitialiser complet (efface radios, réponses, feedback)
+  function resetQuiz() {
+    for (let i = 0; i < quizData.length; i++) {
+      // Décocher tous les radio buttons du groupe i
+      const radios = document.querySelectorAll(`input[name="q${i}"]`);
+      radios.forEach(radio => radio.checked = false);
+      // Réinitialiser les données
+      userAnswers[i] = null;
+      // Remettre feedback par défaut
+      const fbDiv = document.getElementById(`fb${i}`);
+      if (fbDiv) {
+        fbDiv.innerHTML = "⚡ Pas encore vérifié";
+        fbDiv.className = "feedback";
+        fbDiv.style.background = "#faf2e9";
+        fbDiv.style.borderLeft = "3px solid #eccaa8";
+      }
+    }
+    updateScoreDisplay();  // remet score à 0
+    // small message optatif
+    const scoreSpan = document.getElementById('scoreDisplay');
+    if(scoreSpan) scoreSpan.innerText = "Score : 0 / 15";
+  }
+
+  // Génération dynamique du formulaire HTML des questions
+  function buildQuiz() {
+    const container = document.getElementById('questionsContainer');
+    if (!container) return;
+    let html = '';
+    
+    quizData.forEach((item, idx) => {
+      const qNumber = idx + 1;
+      html += `<div class="question-card" id="card${idx}">`;
+      html += `<div class="question-text">${qNumber}. ${item.question}</div>`;
+      html += `<div class="options">`;
+      // générer les options (radio buttons)
+      item.options.forEach(opt => {
+        // on encode la valeur
+        const escapedOpt = opt.replace(/"/g, '&quot;');
+        html += `<label>
+                  <input type="radio" name="q${idx}" value="${escapedOpt}">
+                  ${opt}
+                </label>`;
+      });
+      html += `</div>`;
+      // bouton vérifier pour cette question
+      html += `<div style="margin: 0.5rem 0 0.2rem 0;">
+                <button class="verify-single" data-qidx="${idx}" style="font-size:0.8rem; background:#e3cfbc;">🔍 Vérifier</button>
+               </div>`;
+      html += `<div id="fb${idx}" class="feedback" style="margin-top: 0.6rem;">⚡ Pas encore vérifié</div>`;
+      html += `</div>`;
+    });
+    
+    container.innerHTML = html;
+    
+    // Après avoir injecté le DOM, attacher les événements aux boutons "Vérifier" individuels
+    const verifyButtons = document.querySelectorAll('.verify-single');
+    verifyButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idxAttr = btn.getAttribute('data-qidx');
+        if (idxAttr !== null) {
+          const index = parseInt(idxAttr, 10);
+          verifySingleQuestion(index);
+        }
+      });
+    });
+    
+    // Événements supplémentaires : on peut aussi mettre à jour en changeant de radio ? Optionnel (mais requis explicite: bouton Vérifier)
+    // on ajoute également pour rafraîchir le score si l'utilisateur change mais sans clic vérifier? 
+    // Le comportement selon besoin: l'utilisateur doit cliquer sur "Vérifier" pour valider sa réponse. Mais le score final se base sur la dernière vérification.
+    // pour être cohérent, on laisse le mécanisme "vérifier" modifie le feedback + stocke userAnswers.
+    // Si l'utilisateur sélectionne une autre réponse sans recliquer vérifier, la réponse n'est pas mise à jour tant qu'il n'a pas vérifié.
+    // Pour une meilleure ergonomie, on peut aussi lier les radio à la mise à jour automatique? NON, l'énoncé demande "Al hacer clic en un botón 'Vérifier', doit montrer si correct/incorrect".
+    // Donc maintenons le comportement explicite.
+    
+    // Toutefois, pour ne pas perdre le score si l'utilisateur modifie une réponse déjà vérifiée, on peut pré-remplir les radios si déjà stockées:
+    // synchronisation userAnswers existants (apres reset? normal)
+    for (let i = 0; i < quizData.length; i++) {
+      if (userAnswers[i] !== null) {
+        const radioToCheck = document.querySelector(`input[name="q${i}"][value="${userAnswers[i].replace(/"/g, '&quot;')}"]`);
+        if (radioToCheck) radioToCheck.checked = true;
+        // Mais on ne recalcule pas le feedback si déjà présent: on restaure le feedback textuel?
+        const fbDivRestore = document.getElementById(`fb${i}`);
+        if (fbDivRestore && feedbackStatus[i] !== undefined) {
+          // pour éviter de perdre, mais nous n'avons pas stocké le texte, on peut re-verifier apres construction? Pas nécessaire.
+          // Simplement si userAnswers préexistent, on appelle vérif pour homogénéiser l'affichage après reset ? Reset repart à zero.
+        }
+      }
+    }
+  }
+
+  // ========== Initialisation et Event Listeners globaux ==========
+  function init() {
+    buildQuiz();
+    const globalBtn = document.getElementById('globalCheckBtn');
+    const resetBtn = document.getElementById('resetQuizBtn');
+    
+    if (globalBtn) {
+      globalBtn.addEventListener('click', () => {
+        verifyAllQuestions();
+      });
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        resetQuiz();
+        // on s'assure que l'interface est sync: après reset, les feedbacks sont restaurés et toutes réponses effacées.
+        for (let i = 0; i < quizData.length; i++) {
+          const fbDiv = document.getElementById(`fb${i}`);
+          if (fbDiv) {
+            fbDiv.innerHTML = "⚡ Pas encore vérifié";
+            fbDiv.className = "feedback";
+            fbDiv.style.background = "#faf2e9";
+          }
+        }
+        // supprimer toutes les sélections radio
+        const allRadios = document.querySelectorAll('input[type="radio"]');
+        allRadios.forEach(radio => radio.checked = false);
+        // réinitialiser userAnswers et recalcul score
+        userAnswers.fill(null);
+        updateScoreDisplay();
+      });
+    }
+    updateScoreDisplay();
+  }
+  
+  // lorsqu'on clique sur vérifier individuellement, on fait appel à verifySingleQuestion qui gère aussi le score.
+  // Démarrer l'app
+  init();
+</script>
+</body>
+</html>
